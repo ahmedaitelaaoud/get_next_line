@@ -90,7 +90,6 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 		i++;
 	}
 	new[i] = '\0';
-	free((char *)s);
 	return (new);
 }
 

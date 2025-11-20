@@ -13,8 +13,10 @@
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 
-# define BUFFER_SIZE 50
+# define BUFFER_SIZE 5
+# include <fcntl.h>
 # include <stddef.h>
+# include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
 
@@ -24,5 +26,8 @@ char	*ft_strdup(const char *s);
 char	*ft_strjoin(char const *s1, char const *s2);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strchr(const char *s, int c);
+char	*ft_verify(char *tmp, char *buff);
+void	*ft_memcpy(void *dest, const void *src, size_t n);
+char	*ft_line_and_free(char **ptr_tmp, char **ptr_buff, ssize_t b);
 
 #endif

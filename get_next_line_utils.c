@@ -41,7 +41,7 @@ char	*ft_strdup(const char *s)
 	return (new);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+/*char	*ft_strjoin(char const *s1, char const *s2)
 {
 	char	*new;
 	size_t	i;
@@ -67,7 +67,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	}
 	new[i] = '\0';
 	return (new);
-}
+}*/
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
@@ -90,6 +90,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 		i++;
 	}
 	new[i] = '\0';
+	free((char *)s);
 	return (new);
 }
 

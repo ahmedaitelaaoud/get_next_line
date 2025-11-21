@@ -63,11 +63,11 @@ void	update_remainder(char **stored_ptr)
 	old_stored = *stored_ptr;
 	after_newline = ft_strdup(ft_strchr(*stored_ptr, '\n') + 1);
 	if (!after_newline || *after_newline == '\0')
-    {
-        free(after_newline);
-        *stored_ptr = NULL;
-    }
-    else
+	{
+		free(after_newline);
+		*stored_ptr = NULL;
+	}
+	else
 		*stored_ptr = after_newline;
 	free(old_stored);
 }
@@ -103,7 +103,7 @@ char	*extract_line(char **stored_ptr, char **buffer_ptr, ssize_t eof_flag)
 
 char	*get_next_line(int fd)
 {
-	char		*read_buffer = NULL;
+	char		*read_buffer;
 	ssize_t		bytes_read;
 	static char	*leftover_text;
 	char		*updated_leftover;
@@ -128,15 +128,4 @@ char	*get_next_line(int fd)
 		leftover_text = updated_leftover;
 	}
 	return (extract_line(&leftover_text, &read_buffer, 0));
-}
-int main()
-{
-	int fd = 0; 
-	char *line = get_next_line(fd);
-	if (line)
-	{
-		printf("%s", line);
-		free(line);
-	}
-	return (0);
 }

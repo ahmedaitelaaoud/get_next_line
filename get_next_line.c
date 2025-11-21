@@ -12,114 +12,131 @@
 
 #include "get_next_line.h"
 
-char	*ft_verify(char *tmp, char *buff)
+char	*join_and_free(char *stored, char *buffer)
 {
-	char	*keep_tmp;
-	int		len;
+	char	*old_stored;
+	int		total_len;
 
-	len = 0;
-	keep_tmp = NULL;
-	if (tmp)
+	old_stored = NULL;
+	if (stored)
 	{
-		keep_tmp = ft_strdup(tmp);
-		free(tmp);
-		len = ft_strlen(keep_tmp) + ft_strlen(buff);
-		tmp = (char *)malloc(len + 1);
-		if (!tmp)
-			return (NULL);
-		ft_memcpy(tmp, keep_tmp, ft_strlen(keep_tmp) + 1);
-		tmp[ft_strlen(keep_tmp)] = '\0';
-		ft_memcpy(ft_strchr(tmp, '\0'), buff, ft_strlen(buff));
-		tmp[len] = '\0';
-		free(keep_tmp);
+		old_stored = ft_strdup(stored);
+		free(stored);
+		total_len = ft_strlen(old_stored) + ft_strlen(buffer);
+		stored = (char *)malloc(total_len + 1);
+		if (!stored)
+			return (free(old_stored), NULL);
+		ft_memcpy(stored, old_stored, ft_strlen(old_stored));
+		ft_memcpy(stored + ft_strlen(old_stored), buffer, ft_strlen(buffer));
+		stored[total_len] = '\0';
+		free(old_stored);
 	}
-	else if (!tmp)
-	{
-		tmp = ft_strdup(buff);
-	}
-	return (tmp);
+	else
+		stored = ft_strdup(buffer);
+	return (stored);
 }
 
 void	*ft_memcpy(void *dest, const void *src, size_t n)
 {
-	unsigned char	*d;
-	unsigned char	*s;
-	size_t			i;
+	unsigned char	*destination;
+	unsigned char	*source;
+	size_t			index;
 
 	if (!dest || !src)
 		return (NULL);
-	d = (unsigned char *)dest;
-	s = (unsigned char *)src;
-	i = 0;
-	while (i < n)
+	destination = (unsigned char *)dest;
+	source = (unsigned char *)src;
+	index = 0;
+	while (index < n)
 	{
-		d[i] = s[i];
-		i++;
+		destination[index] = source[index];
+		index++;
 	}
 	return (dest);
 }
 
-void	ft_extract(char **ptr)
+void	update_remainder(char **stored_ptr)
 {
-	char	*keep_tmp;
+	char	*after_newline;
+	char	*old_stored;
 
-	keep_tmp = ft_strdup(ft_strchr(*ptr, '\n') + 1);
-	free(*ptr);
-	*ptr = keep_tmp;
+	old_stored = *stored_ptr;
+	after_newline = ft_strdup(ft_strchr(*stored_ptr, '\n') + 1);
+	if (!after_newline || *after_newline == '\0')
+    {
+        free(after_newline);
+        *stored_ptr = NULL;
+    }
+    else
+		*stored_ptr = after_newline;
+	free(old_stored);
 }
 
-char	*ft_line_and_free(char **ptr_tmp, char **ptr_buff, ssize_t b)
+char	*extract_line(char **stored_ptr, char **buffer_ptr, ssize_t eof_flag)
 {
-	char	*line;
+	char	*current_line;
 
-	line = NULL;
-	if (*ptr_tmp && **ptr_tmp && b == 0)
+	current_line = NULL;
+	if (*stored_ptr && **stored_ptr && eof_flag == 0)
 	{
-		line = ft_strdup(*ptr_tmp);
-		free(*ptr_tmp);
-		*ptr_tmp = NULL;
-		free(*ptr_buff);
-		*ptr_buff = NULL;
-		return (line);
+		current_line = ft_strdup(*stored_ptr);
+		free(*stored_ptr);
+		*stored_ptr = NULL;
+		if (*buffer_ptr)
+			free(*buffer_ptr);
+		*buffer_ptr = NULL;
+		return (current_line);
 	}
-	if (ft_strchr(*ptr_tmp, '\n') != NULL)
+	if (*stored_ptr && ft_strchr(*stored_ptr, '\n') != NULL)
 	{
-		line = ft_substr(*ptr_tmp, 0, (ft_strlen(*ptr_tmp))
-				- ft_strlen(ft_strchr(*ptr_tmp, '\n')) + 1);
-		ft_extract(ptr_tmp);
-		return (line);
+		current_line = ft_substr(*stored_ptr, 0, (ft_strlen(*stored_ptr))
+				- ft_strlen(ft_strchr(*stored_ptr, '\n')) + 1);
+		update_remainder(stored_ptr);
+		return (current_line);
 	}
-	free(*ptr_tmp);
-	*ptr_tmp = NULL;
-	free(*ptr_buff);
-	*ptr_buff = NULL;
-	return (NULL);
+	free(*stored_ptr);
+	*stored_ptr = NULL;
+	if (*buffer_ptr)
+		free(*buffer_ptr);
+	return (*buffer_ptr = NULL, NULL);
 }
 
 char	*get_next_line(int fd)
 {
-	char		*buff;
-	ssize_t		read_bytes;
-	static char	*tmp;
+	char		*read_buffer = NULL;
+	ssize_t		bytes_read;
+	static char	*leftover_text;
+	char		*updated_leftover;
 
-	buff = NULL;
-	read_bytes = 1;
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	while (read_bytes != 0)
+	while (1)
 	{
-		if (ft_strchr(tmp, '\n') != NULL)
-			return (ft_line_and_free(&tmp, &buff, read_bytes));
-		buff = (char *)malloc(BUFFER_SIZE + 1);
-		if (!buff)
-			return (NULL);
-		read_bytes = read(fd, buff, BUFFER_SIZE);
-		if (read_bytes <= 0)
+		if (ft_strchr(leftover_text, '\n') != NULL)
+			return (extract_line(&leftover_text, &read_buffer, 1));
+		read_buffer = (char *)malloc(BUFFER_SIZE + 1);
+		if (!read_buffer)
+			return (free(leftover_text), leftover_text = NULL, NULL);
+		bytes_read = read(fd, read_buffer, BUFFER_SIZE);
+		if (bytes_read <= 0)
 			break ;
-		buff[read_bytes] = '\0';
-		tmp = ft_verify(tmp, buff);
-		free(buff);
-		buff = NULL;
+		read_buffer[bytes_read] = '\0';
+		updated_leftover = join_and_free(leftover_text, read_buffer);
+		free(read_buffer);
+		if (!updated_leftover)
+			return (leftover_text = NULL, NULL);
+		leftover_text = updated_leftover;
 	}
-	return (ft_line_and_free(&tmp, &buff, read_bytes));
+	return (extract_line(&leftover_text, &read_buffer, 0));
+}
+int main()
+{
+	int fd = 0; 
+	char *line = get_next_line(fd);
+	if (line)
+	{
+		printf("%s", line);
+		free(line);
+	}
+	return (0);
 }

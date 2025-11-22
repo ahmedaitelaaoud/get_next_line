@@ -6,7 +6,7 @@
 /*   By: aait-ela <aait-ela@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 15:16:29 by aait-ela          #+#    #+#             */
-/*   Updated: 2025/11/22 18:20:16 by aait-ela         ###   ########.fr       */
+/*   Updated: 2025/11/22 18:32:25 by aait-ela         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,4 +83,23 @@ char	*ft_strchr(const char *s, int c)
 	if (cc == '\0')
 		return ((char *)&s[i]);
 	return (NULL);
+}
+
+void	*ft_memcpy(void *dest, const void *src, size_t n)
+{
+	unsigned char	*destination;
+	unsigned char	*source;
+	size_t			index;
+
+	if (!dest || !src)
+		return (NULL);
+	destination = (unsigned char *)dest;
+	source = (unsigned char *)src;
+	index = 0;
+	while (index < n)
+	{
+		destination[index] = source[index];
+		index++;
+	}
+	return (dest);
 }

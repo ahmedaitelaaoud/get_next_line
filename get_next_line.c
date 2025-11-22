@@ -6,7 +6,7 @@
 /*   By: aait-ela <aait-ela@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 14:12:06 by aait-ela          #+#    #+#             */
-/*   Updated: 2025/11/22 18:11:04 by aait-ela         ###   ########.fr       */
+/*   Updated: 2025/11/22 18:32:39 by aait-ela         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,23 +89,4 @@ char	*get_next_line(int fd)
 	if (!stash || *stash == '\0')
 		return (free(stash), stash = NULL, NULL);
 	return (extract_line(&stash));
-}
-
-void	*ft_memcpy(void *dest, const void *src, size_t n)
-{
-	unsigned char	*destination;
-	unsigned char	*source;
-	size_t			index;
-
-	if (!dest || !src)
-		return (NULL);
-	destination = (unsigned char *)dest;
-	source = (unsigned char *)src;
-	index = 0;
-	while (index < n)
-	{
-		destination[index] = source[index];
-		index++;
-	}
-	return (dest);
 }

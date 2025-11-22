@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aait-ela <aait-ela@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: aait-ela <aait-ela@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/18 16:05:32 by aait-ela          #+#    #+#             */
-/*   Updated: 2025/11/18 16:47:33 by aait-ela         ###   ########.fr       */
+/*   Created: 2025/11/22 14:13:33 by aait-ela          #+#    #+#             */
+/*   Updated: 2025/11/22 15:22:21 by aait-ela         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,6 @@
 # endif
 
 # include <fcntl.h>
-# include <stddef.h>
-# include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
 
@@ -33,8 +31,8 @@ size_t	ft_strlen(const char *s);
 char	*ft_strdup(const char *s);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strchr(const char *s, int c);
-char	*ft_verify(char *tmp, char *buff);
 void	*ft_memcpy(void *dest, const void *src, size_t n);
-char	*ft_line_and_free(char **ptr_tmp, char **ptr_buff, ssize_t b);
+char	*extract_line(char **stash_ptr);
+char	*append_buffer(char *stash, char *buffer);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: aait-ela <aait-ela@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 14:12:06 by aait-ela          #+#    #+#             */
-/*   Updated: 2025/11/22 18:32:39 by aait-ela         ###   ########.fr       */
+/*   Updated: 2025/11/23 18:46:08 by aait-ela         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,10 @@ char	*extract_line(char **stash_ptr)
 	}
 	line = ft_substr(stash, 0, (newline - stash) + 1);
 	rest = ft_strdup(newline + 1);
+	if(!rest || !*rest)
+		return (free(rest),free(stash), *stash_ptr = NULL, line);
+	*stash_ptr = rest;
 	free(stash);
-	if (*rest)
-		*stash_ptr = rest;
-	else
-		*stash_ptr = NULL;
-	if (!*stash_ptr)
-		free(rest);
 	return (line);
 }
 
@@ -72,13 +69,15 @@ char	*get_next_line(int fd)
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	buffer = malloc(BUFFER_SIZE + 1);
+	buffer = malloc((size_t)BUFFER_SIZE + 1);
 	if (!buffer)
 		return (NULL);
 	while (!ft_strchr(stash, '\n'))
 	{
 		read_len = read(fd, buffer, BUFFER_SIZE);
-		if (read_len <= 0)
+		if (read_len < 0)
+			return(free(buffer),free(stash), stash = NULL, NULL);
+		if (read_len == 0)
 			break ;
 		buffer[read_len] = '\0';
 		stash = append_buffer(stash, buffer);

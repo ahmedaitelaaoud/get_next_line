@@ -1,0 +1,105 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils_bonus.c                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aait-ela <aait-ela@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/22 15:16:29 by aait-ela          #+#    #+#             */
+/*   Updated: 2025/11/23 23:24:11 by aait-ela         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "get_next_line_bonus.h"
+
+size_t	ft_strlen(const char *s)
+{
+	size_t	i;
+
+	i = 0;
+	if (!s)
+		return (0);
+	while (s[i])
+		i++;
+	return (i);
+}
+
+char	*ft_strdup(const char *s)
+{
+	char	*new;
+	int		i;
+
+	i = 0;
+	if (!s)
+		return (NULL);
+	new = malloc(ft_strlen(s) + 1);
+	if (!new)
+		return (NULL);
+	while (*s)
+		new[i++] = *(s++);
+	new[i] = '\0';
+	return (new);
+}
+
+char	*ft_substr(char const *s, unsigned int start, size_t len)
+{
+	char	*new;
+	size_t	i;
+
+	if (!s)
+		return (NULL);
+	if (start >= ft_strlen(s))
+		return (ft_strdup(""));
+	if (len > ft_strlen(s) - start)
+		len = ft_strlen(s) - start;
+	new = malloc(len + 1);
+	if (!new)
+		return (NULL);
+	i = 0;
+	while (i < len && s[i + start])
+	{
+		new[i] = s[i + start];
+		i++;
+	}
+	new[i] = '\0';
+	return (new);
+}
+
+char	*ft_strchr(const char *s, int c)
+{
+	char	cc;
+	size_t	i;
+
+	cc = (char)c;
+	if (!s)
+		return (NULL);
+	i = 0;
+	while (s[i])
+	{
+		if (cc == s[i])
+			return ((char *)&s[i]);
+		i++;
+	}
+	if (cc == '\0')
+		return ((char *)&s[i]);
+	return (NULL);
+}
+
+void	*ft_memcpy(void *dest, const void *src, size_t n)
+{
+	unsigned char	*destination;
+	unsigned char	*source;
+	size_t			index;
+
+	if (!dest || !src)
+		return (NULL);
+	destination = (unsigned char *)dest;
+	source = (unsigned char *)src;
+	index = 0;
+	while (index < n)
+	{
+		destination[index] = source[index];
+		index++;
+	}
+	return (dest);
+}
